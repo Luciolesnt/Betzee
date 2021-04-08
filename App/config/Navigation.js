@@ -9,7 +9,9 @@ const MainStack = createStackNavigator();
 
 // This contain the Home page where you can press START and read the rules
 const MainStackScreen = () => (
-  <MainStack.Navigator headerMode="screen" initialRouteName="Table">
+  <MainStack.Navigator 
+  initialRouteName="Table"
+  >
     <MainStack.Screen
       name="Home"
       component={Home}
