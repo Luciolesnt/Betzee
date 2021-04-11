@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   StatusBar,
@@ -8,58 +8,12 @@ import {
   Alert,
 } from "react-native";
 import { StackActions } from "@react-navigation/native";
-import {
-  Table,
-  TableWrapper,
-  Row,
-  Rows,
-  Col,
-  Cols,
-  Cell,
-} from "react-native-table-component";
+import { Col, Grid } from "react-native-easy-grid";
+import Dialog from "react-native-dialog";
+import RowItem from "../components/RowItem";
 
-import { Entypo, SimpleLineIcons } from "@expo/vector-icons";
+import { Entypo, SimpleLineIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 import colors from "../constants/colors";
-
-const tableContent = {
-  tableHead: [" ", "Lucie", "Gaëtan"],
-  tableTitle: [
-    "1",
-    "2",
-    "3",
-    "4",
-    "5",
-    "6",
-    "Total",
-    "Bonus",
-    "x3",
-    "x4",
-    "Full",
-    "P Suite",
-    "G Suite",
-    "Yahtzee",
-    "Chance",
-    "Total",
-  ],
-  tableData: [
-    ["5", "3"],
-    ["5", "3"],
-    ["5", "3"],
-    ["5", "3"],
-    ["5", "3"],
-    ["5", "3"],
-    ["5", "3"],
-    ["5", "3"],
-    ["5", "3"],
-    ["5", "3"],
-    ["5", "3"],
-    ["5", "3"],
-    ["5", "3"],
-    ["5", "3"],
-    ["5", "3"],
-    ["5", "3"],
-  ],
-};
 
 const styles = StyleSheet.create({
   tableContainer: {
@@ -69,32 +23,66 @@ const styles = StyleSheet.create({
   icons: {
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
   },
-  table: {
+  grid: {
+    marginTop: 10,
   },
-  row: {
-    height: 40,
+  colTitles: {
+    backgroundColor: colors.purple,
+    borderRadius: 5,
   },
-  tableWrapper: {
-    flexDirection: "row",
+  player1: {
+    marginLeft: 2,
+    backgroundColor: colors.green,
+    borderRadius: 5,
   },
-  col: {
-    flex: 0.5,
-    borderWidth: 1,
-    borderColor: colors.green,
-  },
-  rows: {
-    height: 35,
-    borderTopWidth: 1,
-    borderColor: colors.red,
+  player2: {
+    marginLeft: 2,
+    backgroundColor: colors.red,
+    borderRadius: 5,
   },
   text: {
-    textAlign: "center",
+    color: "white",
+    textTransform: "uppercase",
+    fontWeight: "500",
+  },
+  row: {
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
 
-export default () => {
+export default ({ navigation }) => {
+  const [value, setValue] = useState("");
+  const [player1, setPlayer1] = useState("Lucie")
+  const [visible, setVisible] = useState(false);
+  let newName;
+
+  const showModal = () => {
+    setVisible(true);
+  };
+
+  const handleCancel = () => {
+    setVisible(false);
+  };
+  
+  const changeName = (event) => {
+    console.log(event);
+    newName = event;
+  };
+
+  const handleOK = () => {
+    setVisible(false);
+    if(newName === undefined){
+      setPlayer1(player1);
+    }
+    else{
+      setPlayer1(newName);
+    }
+  };
+
+
   return (
     <SafeAreaView style={styles.tableContainer}>
       <StatusBar hidden />
@@ -106,46 +94,76 @@ export default () => {
         </TouchableOpacity>
         <SimpleLineIcons name="options" size={24} color={colors.grey} />
       </View>
-      <Table style={styles.table}>
-        <Row
-          data={tableContent.tableHead}
-          style={styles.row}
-          flexArr={[1,2,2]}
-          textStyle={styles.text}
-          onPress={() => Alert.alert("caca")}
-        />
-        <TableWrapper style={styles.tableWrapper}>
-          <Col
-            style={styles.col}
-            heightArr={[
-              35,
-              35,
-              35,
-              35,
-              35,
-              35,
-              35,
-              35,
-              35,
-              35,
-              35,
-              35,
-              35,
-              35,
-              35,
-              35,
-            ]}
-            data={tableContent.tableTitle}
-            textStyle={styles.text}
+      <Grid style={styles.grid} size={1}>
+        <Col style={styles.colTitles}>
+          <RowItem />
+          <RowItem text={<MaterialCommunityIcons name="dice-1" size={24} color="white" />} />
+          <RowItem text={<MaterialCommunityIcons name="dice-2" size={24} color="white" />} />
+          <RowItem text={<MaterialCommunityIcons name="dice-3" size={24} color="white" />} />
+          <RowItem text={<MaterialCommunityIcons name="dice-4" size={24} color="white" />} />
+          <RowItem text={<MaterialCommunityIcons name="dice-5" size={24} color="white" />} />
+          <RowItem text={<MaterialCommunityIcons name="dice-6" size={24} color="white" />} />
+          <RowItem text="Bonus" />
+          <RowItem text="Total" />
+          <RowItem text={<MaterialCommunityIcons name="numeric-3-box-multiple" size={24} color="white" />} />
+          <RowItem text={<MaterialCommunityIcons name="numeric-4-box-multiple" size={24} color="white" />} />
+          <RowItem text="Full" />
+          <RowItem text="P Suite" />
+          <RowItem text="G Suite" />
+          <RowItem text="Yahtzee" />
+          <RowItem text="Total" />
+        </Col>
+        <Col style={styles.player1} size={2}>
+          <RowItem onPress={showModal} text={player1} />
+          <Dialog.Container visible={visible}>
+            <Dialog.Title>Nouveau nom</Dialog.Title>
+            <Dialog.Input placeholder={player1} onChangeText={changeName} />
+            <Dialog.Button label="Annuler" onPress={handleCancel} />
+            <Dialog.Button label="OK" onPress={handleOK} />
+          </Dialog.Container>
+          <RowItem />
+          <RowItem />
+          <RowItem />
+          <RowItem />
+          <RowItem />
+          <RowItem />
+          <RowItem />
+          <RowItem />
+          <RowItem />
+          <RowItem />
+          <RowItem />
+          <RowItem />
+          <RowItem />
+          <RowItem />
+          <RowItem />
+        </Col>
+        <Col style={styles.player2} size={2}>
+          <RowItem
+            onPress={() => Alert.alert("Rename")}
+            onLongPress={() => console.log("caca")}
+            text="Gaëtan"
           />
-          <Rows
-            style={styles.rows}
-            flexArr={[1,1]}
-            data={tableContent.tableData}
-            textStyle={styles.text}
+          <RowItem
+            onPress={() => Alert.alert("Modal")}
+            onLongPress={() => setValue("3")}
+            text={value}
           />
-        </TableWrapper>
-      </Table>
+          <RowItem />
+          <RowItem />
+          <RowItem />
+          <RowItem />
+          <RowItem />
+          <RowItem />
+          <RowItem />
+          <RowItem />
+          <RowItem />
+          <RowItem />
+          <RowItem />
+          <RowItem />
+          <RowItem />
+          <RowItem />
+        </Col>
+      </Grid>
     </SafeAreaView>
   );
 };
