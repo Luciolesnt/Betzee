@@ -7,12 +7,12 @@ import {
   TouchableOpacity,
   Alert,
 } from "react-native";
-import { connect } from "react-redux";
+import { connect, useDispatch, useSelector } from "react-redux";
 import { StackActions } from "@react-navigation/native";
 import { Col, Grid } from "react-native-easy-grid";
 import Dialog from "react-native-dialog";
 import RowItem from "../components/RowItem";
-import dices from "../data/dices";
+import { addResult } from "../store/actions/player";
 
 import {
   Entypo,
@@ -51,11 +51,12 @@ const styles = StyleSheet.create({
 });
 
 const Table = ({ navigation, playerOne }) => {
-  console.log(playerOne);
+  const dispatch = useDispatch();
   const [value, setValue] = useState("");
   const [player1, setPlayer1] = useState("Lucie");
   const [visible, setVisible] = useState(false);
   let newName;
+
 
   const showModal = () => {
     setVisible(true);
@@ -77,6 +78,11 @@ const Table = ({ navigation, playerOne }) => {
     } else {
       setPlayer1(newName);
     }
+  };
+
+  const handleLongPress = (id, full) => {
+    console.log("caca");
+    dispatch(addResult(id, full));
   };
 
   return (
@@ -158,11 +164,12 @@ const Table = ({ navigation, playerOne }) => {
             <Dialog.Button label="Annuler" onPress={handleCancel} />
             <Dialog.Button label="OK" onPress={handleOK} />
           </Dialog.Container>
-          {playerOne.map((player) => (
+          {playerOne.map((element) => (
             <RowItem
-              key={player.id}
-              text={player.results}
+              key={element.id}
+              text={element.result}
               onPress={() => Alert.alert("todo")}
+              onLongPress={() => handleLongPress(element.id, element.full)}
             />
           ))}
         </Col>
@@ -202,8 +209,11 @@ const mapStateToProps = (state) => ({
   playerOne: state.results.playerOne,
 });
 
-const mapDispatchToProps = (dispatch) => ({
+// const mapDispatchToProps = (dispatch) => ({
+//     addResult: (id, full) => {
+//       console.log("pipi");
+//       dispatch(addResult(id, full));
+//     },
+//   });
 
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(Table);
+export default connect(mapStateToProps)(Table);
