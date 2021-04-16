@@ -7,12 +7,18 @@ import {
   TouchableOpacity,
   Alert,
 } from "react-native";
+import { connect } from "react-redux";
 import { StackActions } from "@react-navigation/native";
 import { Col, Grid } from "react-native-easy-grid";
 import Dialog from "react-native-dialog";
 import RowItem from "../components/RowItem";
+import dices from "../data/dices";
 
-import { Entypo, SimpleLineIcons, MaterialCommunityIcons } from "@expo/vector-icons";
+import {
+  Entypo,
+  SimpleLineIcons,
+  MaterialCommunityIcons,
+} from "@expo/vector-icons";
 import colors from "../constants/colors";
 
 const styles = StyleSheet.create({
@@ -42,20 +48,12 @@ const styles = StyleSheet.create({
     backgroundColor: colors.red,
     borderRadius: 5,
   },
-  text: {
-    color: "white",
-    textTransform: "uppercase",
-    fontWeight: "500",
-  },
-  row: {
-    alignItems: "center",
-    justifyContent: "center",
-  },
 });
 
-export default ({ navigation }) => {
+const Table = ({ navigation, playerOne }) => {
+  console.log(playerOne);
   const [value, setValue] = useState("");
-  const [player1, setPlayer1] = useState("Lucie")
+  const [player1, setPlayer1] = useState("Lucie");
   const [visible, setVisible] = useState(false);
   let newName;
 
@@ -66,7 +64,7 @@ export default ({ navigation }) => {
   const handleCancel = () => {
     setVisible(false);
   };
-  
+
   const changeName = (event) => {
     console.log(event);
     newName = event;
@@ -74,14 +72,12 @@ export default ({ navigation }) => {
 
   const handleOK = () => {
     setVisible(false);
-    if(newName === undefined){
+    if (newName === undefined) {
       setPlayer1(player1);
-    }
-    else{
+    } else {
       setPlayer1(newName);
     }
   };
-
 
   return (
     <SafeAreaView style={styles.tableContainer}>
@@ -97,20 +93,61 @@ export default ({ navigation }) => {
       <Grid style={styles.grid} size={1}>
         <Col style={styles.colTitles}>
           <RowItem />
-          <RowItem text={<MaterialCommunityIcons name="dice-1" size={24} color="white" />} />
-          <RowItem text={<MaterialCommunityIcons name="dice-2" size={24} color="white" />} />
-          <RowItem text={<MaterialCommunityIcons name="dice-3" size={24} color="white" />} />
-          <RowItem text={<MaterialCommunityIcons name="dice-4" size={24} color="white" />} />
-          <RowItem text={<MaterialCommunityIcons name="dice-5" size={24} color="white" />} />
-          <RowItem text={<MaterialCommunityIcons name="dice-6" size={24} color="white" />} />
+          <RowItem
+            text={
+              <MaterialCommunityIcons name="dice-1" size={24} color="white" />
+            }
+          />
+          <RowItem
+            text={
+              <MaterialCommunityIcons name="dice-2" size={24} color="white" />
+            }
+          />
+          <RowItem
+            text={
+              <MaterialCommunityIcons name="dice-3" size={24} color="white" />
+            }
+          />
+          <RowItem
+            text={
+              <MaterialCommunityIcons name="dice-4" size={24} color="white" />
+            }
+          />
+          <RowItem
+            text={
+              <MaterialCommunityIcons name="dice-5" size={24} color="white" />
+            }
+          />
+          <RowItem
+            text={
+              <MaterialCommunityIcons name="dice-6" size={24} color="white" />
+            }
+          />
           <RowItem text="Bonus" />
           <RowItem text="Total" />
-          <RowItem text={<MaterialCommunityIcons name="numeric-3-box-multiple" size={24} color="white" />} />
-          <RowItem text={<MaterialCommunityIcons name="numeric-4-box-multiple" size={24} color="white" />} />
+          <RowItem
+            text={
+              <MaterialCommunityIcons
+                name="numeric-3-box-multiple"
+                size={24}
+                color="white"
+              />
+            }
+          />
+          <RowItem
+            text={
+              <MaterialCommunityIcons
+                name="numeric-4-box-multiple"
+                size={24}
+                color="white"
+              />
+            }
+          />
           <RowItem text="Full" />
           <RowItem text="P Suite" />
           <RowItem text="G Suite" />
           <RowItem text="Yahtzee" />
+          <RowItem text="Chance" />
           <RowItem text="Total" />
         </Col>
         <Col style={styles.player1} size={2}>
@@ -121,21 +158,13 @@ export default ({ navigation }) => {
             <Dialog.Button label="Annuler" onPress={handleCancel} />
             <Dialog.Button label="OK" onPress={handleOK} />
           </Dialog.Container>
-          <RowItem />
-          <RowItem />
-          <RowItem />
-          <RowItem />
-          <RowItem />
-          <RowItem />
-          <RowItem />
-          <RowItem />
-          <RowItem />
-          <RowItem />
-          <RowItem />
-          <RowItem />
-          <RowItem />
-          <RowItem />
-          <RowItem />
+          {playerOne.map((player) => (
+            <RowItem
+              key={player.id}
+              text={player.results}
+              onPress={() => Alert.alert("todo")}
+            />
+          ))}
         </Col>
         <Col style={styles.player2} size={2}>
           <RowItem
@@ -162,8 +191,19 @@ export default ({ navigation }) => {
           <RowItem />
           <RowItem />
           <RowItem />
+          <RowItem />
         </Col>
       </Grid>
     </SafeAreaView>
   );
 };
+
+const mapStateToProps = (state) => ({
+  playerOne: state.results.playerOne,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Table);
