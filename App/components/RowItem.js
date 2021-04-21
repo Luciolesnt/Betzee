@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Text, StyleSheet } from "react-native";
+import { useDispatch } from "react-redux";
 import { Row } from "react-native-easy-grid";
 
 const styles = StyleSheet.create({
@@ -15,6 +16,11 @@ const styles = StyleSheet.create({
 });
 
 export default ({ text, onPress, onLongPress }) => {
+   const dispatch = useDispatch();
+  //  useEffect(() => {
+  //   dispatch(countBonus());
+  //   dispatch(countTotal());
+  // }, [text]);
   return (
     <Row onPress={onPress} style={styles.row} onLongPress={onLongPress}>
       <Text style={styles.text}>{text}</Text>

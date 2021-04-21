@@ -6,13 +6,17 @@ import {
   StyleSheet,
   TouchableOpacity,
   Alert,
+  Modal,
+  Pressable,
+  Text,
 } from "react-native";
-import { connect, useDispatch, useSelector } from "react-redux";
+import { connect, useDispatch } from "react-redux";
 import { StackActions } from "@react-navigation/native";
 import { Col, Grid } from "react-native-easy-grid";
 import Dialog from "react-native-dialog";
 import RowItem from "../components/RowItem";
-import { addResult } from "../store/actions/player";
+import DiceModal from "../components/DiceModal";
+import { addResult, countBonus, countTotal } from "../store/actions/player";
 
 import {
   Entypo,
@@ -26,27 +30,26 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.orange,
   },
-  icons: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingHorizontal: 10,
-  },
   grid: {
-    marginTop: 10,
+    padding: 5,
+  },
+  icons: {
+    alignItems: "center",
+    paddingTop: 5,
   },
   colTitles: {
     backgroundColor: colors.purple,
-    borderRadius: 5,
+    borderRadius: 10,
   },
   player1: {
     marginLeft: 2,
     backgroundColor: colors.green,
-    borderRadius: 5,
+    borderRadius: 10,
   },
   player2: {
     marginLeft: 2,
     backgroundColor: colors.red,
-    borderRadius: 5,
+    borderRadius: 10,
   },
 });
 
@@ -55,8 +58,9 @@ const Table = ({ navigation, playerOne }) => {
   const [value, setValue] = useState("");
   const [player1, setPlayer1] = useState("Lucie");
   const [visible, setVisible] = useState(false);
+  const [diceModalVisible, setDiceModalVisible] = useState(false);
+  const [diceName, setDiceName] = useState("dice-1");
   let newName;
-
 
   const showModal = () => {
     setVisible(true);
@@ -81,24 +85,43 @@ const Table = ({ navigation, playerOne }) => {
   };
 
   const handleLongPress = (id, full) => {
-    console.log("caca");
     dispatch(addResult(id, full));
+    if (id < 7 && id >= 0) {
+      dispatch(countTotal());
+    }
   };
+
+  const handleOnPressUp = (id) => {
+    if (id < 7 && id >= 0) {
+      setDiceName("dice-" + id);
+      setDiceModalVisible(!diceModalVisible);
+    } else {
+      Alert.alert("todo");
+    }
+  };
+
 
   return (
     <SafeAreaView style={styles.tableContainer}>
       <StatusBar hidden />
-      <View style={styles.icons}>
-        <TouchableOpacity
-          onPress={() => navigation.dispatch(StackActions.popToTop())}
-        >
-          <Entypo name="cross" size={24} color={colors.grey} />
-        </TouchableOpacity>
-        <SimpleLineIcons name="options" size={24} color={colors.grey} />
-      </View>
       <Grid style={styles.grid} size={1}>
+        <DiceModal
+          onPress={() => setDiceModalVisible(!diceModalVisible)}
+          diceModalVisible={diceModalVisible}
+          diceName={diceName}
+        />
         <Col style={styles.colTitles}>
-          <RowItem />
+          <RowItem
+            text={
+              <View style={styles.icons}>
+                <TouchableOpacity
+                  onPress={() => navigation.dispatch(StackActions.popToTop())}
+                >
+                  <Entypo name="cross" size={34} color={colors.grey} />
+                </TouchableOpacity>
+              </View>
+            }
+          ></RowItem>
           <RowItem
             text={
               <MaterialCommunityIcons name="dice-1" size={24} color="white" />
@@ -168,17 +191,13 @@ const Table = ({ navigation, playerOne }) => {
             <RowItem
               key={element.id}
               text={element.result}
-              onPress={() => Alert.alert("todo")}
+              onPress={() => handleOnPressUp(element.id)}
               onLongPress={() => handleLongPress(element.id, element.full)}
             />
           ))}
         </Col>
         <Col style={styles.player2} size={2}>
-          <RowItem
-            onPress={() => Alert.alert("Rename")}
-            onLongPress={() => console.log("caca")}
-            text="Gaëtan"
-          />
+          <RowItem onPress={() => Alert.alert("Rename")} text="Gaëtan" />
           <RowItem
             onPress={() => Alert.alert("Modal")}
             onLongPress={() => setValue("3")}
@@ -207,13 +226,7 @@ const Table = ({ navigation, playerOne }) => {
 
 const mapStateToProps = (state) => ({
   playerOne: state.results.playerOne,
+  total: state.results.total,
 });
-
-// const mapDispatchToProps = (dispatch) => ({
-//     addResult: (id, full) => {
-//       console.log("pipi");
-//       dispatch(addResult(id, full));
-//     },
-//   });
 
 export default connect(mapStateToProps)(Table);
