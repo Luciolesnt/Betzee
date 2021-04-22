@@ -26,8 +26,8 @@ function resultsReducer(state = initialState, action = {}) {
     case ADD_SELECT: {
       let diceNumber = action.diceName.match(/\d/g);
       diceNumber = diceNumber.join("");
-      let selectResult =  diceNumber* (action.id);
-      if (selectResult === 0 ){
+      let selectResult = diceNumber * action.id;
+      if (selectResult === 0) {
         selectResult = "0";
       }
       console.log(selectResult);
@@ -47,14 +47,26 @@ function resultsReducer(state = initialState, action = {}) {
     }
 
     case COUNT_TOTAL: {
-      const newArr = state.playerOne.filter((element) => element.id < 7);
-      let sum = newArr.map((element) => {
+      const upArr = state.playerOne.filter((element) => element.id < 7);
+      let sum = upArr.map((element) => {
         if (element.result === null) return 0;
         else {
           return parseInt(element.result);
         }
       });
       const total = sum.reduce((acc, item) => (acc += item), 0);
+
+      const fullArr = state.playerOne.filter(
+        (element) => element.id > 8 && element.id < 16
+      );
+      let fullSum = fullArr.map((element) => {
+        if (element.result === null) return 0;
+        else {
+          return parseInt(element.result);
+        }
+      });
+      const fullTotal = fullSum.reduce((acc, item) => (acc += item), 0);
+
       return {
         ...state,
         playerOne: state.playerOne.map((element) => {
@@ -63,24 +75,34 @@ function resultsReducer(state = initialState, action = {}) {
               ...element,
               result: total,
             };
-          } 
+          }
           if (element.id === 7 && total > 62) {
             return {
               ...element,
               result: 50,
-            }
+            };
           }
           if (element.id === 7 && total < 63) {
             return {
               ...element,
               result: null,
-            }
+            };
           }
-          else {
+          if (element.id === 16 && total > 62) {
+            return {
+              ...element,
+              result: fullTotal + total + 50,
+            };
+          }
+          if (element.id === 16 && total < 63) {
+            return {
+              ...element,
+              result: fullTotal + total,
+            };
+          } else {
             return element;
           }
         }),
-        
       };
     }
 

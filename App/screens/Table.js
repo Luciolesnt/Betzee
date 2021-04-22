@@ -6,9 +6,6 @@ import {
   StyleSheet,
   TouchableOpacity,
   Alert,
-  Modal,
-  Pressable,
-  Text,
 } from "react-native";
 import { connect, useDispatch } from "react-redux";
 import { StackActions } from "@react-navigation/native";
@@ -16,7 +13,8 @@ import { Col, Grid } from "react-native-easy-grid";
 import Dialog from "react-native-dialog";
 import RowItem from "../components/RowItem";
 import DiceModal from "../components/DiceModal";
-import { addResult, countBonus, countTotal } from "../store/actions/player";
+import NumModal from "../components/NumModal";
+import { addResult, countTotal } from "../store/actions/player";
 
 import {
   Entypo,
@@ -59,7 +57,10 @@ const Table = ({ navigation, playerOne }) => {
   const [player1, setPlayer1] = useState("Lucie");
   const [visible, setVisible] = useState(false);
   const [diceModalVisible, setDiceModalVisible] = useState(false);
+  const [numModalVisible, setNumModalVisible] = useState(false);
   const [diceName, setDiceName] = useState("dice-1");
+  const [downId, setDownId] = useState("");
+
   let newName;
 
   const showModal = () => {
@@ -89,17 +90,20 @@ const Table = ({ navigation, playerOne }) => {
     if (id < 7 && id >= 0) {
       dispatch(countTotal());
     }
+    else if (id > 8 && id < 16 ) {
+      dispatch(countTotal());
+    }
   };
 
   const handleOnPressUp = (id) => {
     if (id < 7 && id >= 0) {
       setDiceName("dice-" + id);
       setDiceModalVisible(!diceModalVisible);
-    } else {
-      Alert.alert("todo");
+    } else if (id > 8 && id < 16) {
+      setDownId(id);
+      setNumModalVisible(!numModalVisible);
     }
   };
-
 
   return (
     <SafeAreaView style={styles.tableContainer}>
@@ -109,6 +113,11 @@ const Table = ({ navigation, playerOne }) => {
           onPress={() => setDiceModalVisible(!diceModalVisible)}
           diceModalVisible={diceModalVisible}
           diceName={diceName}
+        />
+        <NumModal
+          onPress={() => setNumModalVisible(!numModalVisible)}
+          numModalVisible={numModalVisible}
+          downId={downId}
         />
         <Col style={styles.colTitles}>
           <RowItem
