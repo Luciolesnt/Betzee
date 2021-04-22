@@ -43,6 +43,14 @@ const styles = StyleSheet.create({
 
 export default ({ onPress, diceModalVisible, diceName }) => {
   const dispatch = useDispatch();
+  const setDiceModalVisibleFunction = onPress;
+  const dispatchOnPress = (num) => {
+    dispatch(addSelect(diceName, num));
+    dispatch(countTotal());
+  };
+  const mergeFunc = (num) => {
+    setDiceModalVisibleFunction(), dispatchOnPress(num);
+  };
   return (
     <Modal aninationType="slide" transparent={true} visible={diceModalVisible}>
       <View style={styles.centeredView}>
@@ -54,18 +62,14 @@ export default ({ onPress, diceModalVisible, diceName }) => {
             <Col>
               <TouchableOpacity
                 onPress={() => {
-                  dispatch(addSelect(diceName, 0));
-                  dispatch(countTotal());
+                  mergeFunc(0);
                 }}
               >
                 <Row style={styles.modalRow}></Row>
               </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => {
-                  dispatch(addSelect(diceName, 1));
-                  dispatch(countTotal());
-                }}
-              >
+              <TouchableOpacity onPress={() => {
+                  mergeFunc(1);
+                }}>
                 <Row style={styles.modalRow}>
                   <Text>
                     <MaterialCommunityIcons
@@ -76,12 +80,9 @@ export default ({ onPress, diceModalVisible, diceName }) => {
                   </Text>
                 </Row>
               </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => {
-                  dispatch(addSelect(diceName, 2));
-                  dispatch(countTotal());
-                }}
-              >
+              <TouchableOpacity onPress={() => {
+                  mergeFunc(2);
+                }}>
                 <Row style={styles.modalRow}>
                   <Text>
                     <MaterialCommunityIcons
@@ -97,12 +98,9 @@ export default ({ onPress, diceModalVisible, diceName }) => {
                   </Text>
                 </Row>
               </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => {
-                  dispatch(addSelect(diceName, 3));
-                  dispatch(countTotal());
-                }}
-              >
+              <TouchableOpacity onPress={() => {
+                  mergeFunc(3);
+                }}>
                 <Row style={styles.modalRow}>
                   <Text>
                     <MaterialCommunityIcons
@@ -125,8 +123,7 @@ export default ({ onPress, diceModalVisible, diceName }) => {
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => {
-                  dispatch(addSelect(diceName, 4));
-                  dispatch(countTotal());
+                  mergeFunc(4);
                 }}
               >
                 <Row style={styles.modalRow}>
@@ -156,8 +153,7 @@ export default ({ onPress, diceModalVisible, diceName }) => {
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => {
-                  dispatch(addSelect(diceName, 5));
-                  dispatch(countTotal());
+                  mergeFunc(5);
                 }}
               >
                 <Row style={styles.modalRow}>

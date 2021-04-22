@@ -37,7 +37,6 @@ const ModalStackScreen = () => (
       options={{ headerShown: false }}
     />
   </ModalStack.Navigator>
-  // @TODO : ADD OTHER MODAL : THE CONFIG MODAL, THE END MODAL, THE HISTORIC MODAL, THE ENTRY UP MODAL AND THE ENTRY DOWN MODAL
 );
 
 export default () => (

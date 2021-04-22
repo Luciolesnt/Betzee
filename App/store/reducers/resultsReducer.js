@@ -63,10 +63,24 @@ function resultsReducer(state = initialState, action = {}) {
               ...element,
               result: total,
             };
-          } else {
+          } 
+          if (element.id === 7 && total > 62) {
+            return {
+              ...element,
+              result: 50,
+            }
+          }
+          if (element.id === 7 && total < 63) {
+            return {
+              ...element,
+              result: null,
+            }
+          }
+          else {
             return element;
           }
         }),
+        
       };
     }
 
