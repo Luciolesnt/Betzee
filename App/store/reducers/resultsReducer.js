@@ -3,6 +3,7 @@ import { ADD_RESULT, ADD_SELECT, COUNT_TOTAL } from "../actions/player";
 
 const initialState = {
   playerOne: [...data],
+  playerTwo: [...data],
 };
 
 function resultsReducer(state = initialState, action = {}) {
@@ -24,20 +25,30 @@ function resultsReducer(state = initialState, action = {}) {
     }
 
     case ADD_SELECT: {
-      let diceNumber = action.diceName.match(/\d/g);
-      diceNumber = diceNumber.join("");
-      let selectResult = diceNumber * action.id;
-      if (selectResult === 0) {
-        selectResult = "0";
+      const typeName = typeof action.diceName;
+      let diceNumber = null;
+      let selectResult = null;
+      if (typeName === "string") {
+        diceNumber = action.diceName.match(/\d/g);
+        diceNumber = diceNumber.join("");
+        selectResult = diceNumber * action.id;
+        if (selectResult === 0) {
+          selectResult = "0";
+        }
       }
-      console.log(selectResult);
       return {
         ...state,
         playerOne: state.playerOne.map((element) => {
-          if (element.id === parseInt(diceNumber)) {
+          if (element.id === parseInt(diceNumber) && typeName === "string") {
             return {
               ...element,
               result: selectResult,
+            };
+          }
+          if (element.id === action.diceName && typeName === "number") {
+            return {
+              ...element,
+              result: action.id,
             };
           } else {
             return element;

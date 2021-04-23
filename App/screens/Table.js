@@ -5,7 +5,6 @@ import {
   SafeAreaView,
   StyleSheet,
   TouchableOpacity,
-  Alert,
 } from "react-native";
 import { connect, useDispatch } from "react-redux";
 import { StackActions } from "@react-navigation/native";
@@ -16,11 +15,7 @@ import DiceModal from "../components/DiceModal";
 import NumModal from "../components/NumModal";
 import { addResult, countTotal } from "../store/actions/player";
 
-import {
-  Entypo,
-  SimpleLineIcons,
-  MaterialCommunityIcons,
-} from "@expo/vector-icons";
+import { Entypo, AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
 import colors from "../constants/colors";
 
 const styles = StyleSheet.create({
@@ -51,11 +46,12 @@ const styles = StyleSheet.create({
   },
 });
 
-const Table = ({ navigation, playerOne }) => {
+const Table = ({ navigation, playerOne, playerTwo }) => {
   const dispatch = useDispatch();
-  const [value, setValue] = useState("");
   const [player1, setPlayer1] = useState("Lucie");
+  const [player2, setPlayer2] = useState("Gaëtan");
   const [visible, setVisible] = useState(false);
+  const [input, setInput] = useState(false);
   const [diceModalVisible, setDiceModalVisible] = useState(false);
   const [numModalVisible, setNumModalVisible] = useState(false);
   const [diceName, setDiceName] = useState("dice-1");
@@ -63,25 +59,35 @@ const Table = ({ navigation, playerOne }) => {
 
   let newName;
 
-  const showModal = () => {
-    setVisible(true);
-  };
-
-  const handleCancel = () => {
-    setVisible(false);
+  const showModal = (player) => {
+    if (player === player1) {
+      setVisible(!visible);
+    }
+    if (player === player2) {
+      setInput(!input);
+    }
   };
 
   const changeName = (event) => {
-    console.log(event);
     newName = event;
   };
 
-  const handleOK = () => {
-    setVisible(false);
-    if (newName === undefined) {
-      setPlayer1(player1);
-    } else {
-      setPlayer1(newName);
+  const handleOK = (player) => {
+    if (player === player1) {
+      setVisible(!visible);
+      if (newName === undefined) {
+        setPlayer1(player1);
+      } else {
+        setPlayer1(newName);
+      }
+    }
+    if (player === player2) {
+      setInput(!input);
+      if (newName === undefined) {
+        setPlayer2(player2);
+      } else {
+        setPlayer2(newName);
+      }
     }
   };
 
@@ -89,8 +95,7 @@ const Table = ({ navigation, playerOne }) => {
     dispatch(addResult(id, full));
     if (id < 7 && id >= 0) {
       dispatch(countTotal());
-    }
-    else if (id > 8 && id < 16 ) {
+    } else if (id > 8 && id < 16) {
       dispatch(countTotal());
     }
   };
@@ -119,7 +124,7 @@ const Table = ({ navigation, playerOne }) => {
           numModalVisible={numModalVisible}
           downId={downId}
         />
-        <Col style={styles.colTitles}>
+        <Col style={styles.colTitles} size={1}>
           <RowItem
             text={
               <View style={styles.icons}>
@@ -161,12 +166,18 @@ const Table = ({ navigation, playerOne }) => {
               <MaterialCommunityIcons name="dice-6" size={24} color="white" />
             }
           />
-          <RowItem text="Bonus" />
-          <RowItem text="Total" />
+          <RowItem
+            text={<AntDesign name="plussquare" size={20} color="white" />}
+          />
+          <RowItem
+            text={
+              <MaterialCommunityIcons name="equal" size={24} color="white" />
+            }
+          />
           <RowItem
             text={
               <MaterialCommunityIcons
-                name="numeric-3-box-multiple"
+                name="alpha-b-box"
                 size={24}
                 color="white"
               />
@@ -175,26 +186,70 @@ const Table = ({ navigation, playerOne }) => {
           <RowItem
             text={
               <MaterialCommunityIcons
-                name="numeric-4-box-multiple"
+                name="alpha-c-box"
                 size={24}
                 color="white"
               />
             }
           />
-          <RowItem text="Full" />
-          <RowItem text="P Suite" />
-          <RowItem text="G Suite" />
-          <RowItem text="Yahtzee" />
-          <RowItem text="Chance" />
-          <RowItem text="Total" />
+          <RowItem
+            text={
+              <MaterialCommunityIcons
+                name="alpha-f-box"
+                size={24}
+                color="white"
+              />
+            }
+          />
+          <RowItem
+            text={
+              <MaterialCommunityIcons
+                name="alpha-p-box"
+                size={24}
+                color="white"
+              />
+            }
+          />
+          <RowItem
+            text={
+              <MaterialCommunityIcons
+                name="alpha-g-box"
+                size={24}
+                color="white"
+              />
+            }
+          />
+          <RowItem
+            text={
+              <MaterialCommunityIcons
+                name="alpha-y-box"
+                size={24}
+                color="white"
+              />
+            }
+          />
+          <RowItem
+            text={
+              <MaterialCommunityIcons name="clover" size={24} color="white" />
+            }
+          />
+          <RowItem
+            text={
+              <MaterialCommunityIcons
+                name="equal-box"
+                size={24}
+                color="white"
+              />
+            }
+          />
         </Col>
         <Col style={styles.player1} size={2}>
-          <RowItem onPress={showModal} text={player1} />
+          <RowItem onPress={() => showModal(player1)} text={player1} />
           <Dialog.Container visible={visible}>
             <Dialog.Title>Nouveau nom</Dialog.Title>
             <Dialog.Input placeholder={player1} onChangeText={changeName} />
-            <Dialog.Button label="Annuler" onPress={handleCancel} />
-            <Dialog.Button label="OK" onPress={handleOK} />
+            <Dialog.Button label="Annuler" onPress={() => showModal(player1)} />
+            <Dialog.Button label="OK" onPress={() => handleOK(player1)} />
           </Dialog.Container>
           {playerOne.map((element) => (
             <RowItem
@@ -206,27 +261,21 @@ const Table = ({ navigation, playerOne }) => {
           ))}
         </Col>
         <Col style={styles.player2} size={2}>
-          <RowItem onPress={() => Alert.alert("Rename")} text="Gaëtan" />
-          <RowItem
-            onPress={() => Alert.alert("Modal")}
-            onLongPress={() => setValue("3")}
-            text={value}
-          />
-          <RowItem />
-          <RowItem />
-          <RowItem />
-          <RowItem />
-          <RowItem />
-          <RowItem />
-          <RowItem />
-          <RowItem />
-          <RowItem />
-          <RowItem />
-          <RowItem />
-          <RowItem />
-          <RowItem />
-          <RowItem />
-          <RowItem />
+          <RowItem onPress={() => showModal(player2)} text={player2} />
+          <Dialog.Container visible={input}>
+            <Dialog.Title>Nouveau nom</Dialog.Title>
+            <Dialog.Input placeholder={player2} onChangeText={changeName} />
+            <Dialog.Button label="Annuler" onPress={() => showModal(player2)} />
+            <Dialog.Button label="OK" onPress={() => handleOK(player2)} />
+          </Dialog.Container>
+          {/* {playerTwo.map((element) => (
+            <RowItem
+              key={element.id}
+              text={element.result}
+              onPress={() => handleOnPressUp(element.id)}
+              onLongPress={() => handleLongPress(element.id, element.full)}
+            />
+          ))} */}
         </Col>
       </Grid>
     </SafeAreaView>
@@ -235,7 +284,7 @@ const Table = ({ navigation, playerOne }) => {
 
 const mapStateToProps = (state) => ({
   playerOne: state.results.playerOne,
-  total: state.results.total,
+  playerTwo: state.results.playerTwo,
 });
 
 export default connect(mapStateToProps)(Table);
