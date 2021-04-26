@@ -16,6 +16,7 @@ import NumModal from "../components/NumModal";
 import {
   addResult,
   countTotal,
+  cleanResult,
 } from "../store/actions/player";
 
 import { Entypo, AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
@@ -95,11 +96,13 @@ const Table = ({ navigation, playerOne, playerTwo }) => {
     }
   };
 
-  const handleLongPress = (id, full, player) => {
-    dispatch(addResult(id, full, player));
-    if (id < 7 && id >= 0) {
+  const handleLongPress = (id, full, player, content) => {
+    if(content === null){
+      dispatch(addResult(id, full, player));
       dispatch(countTotal(player));
-    } else if (id > 8 && id < 16) {
+    }
+    else {
+      dispatch(cleanResult(id, player))
       dispatch(countTotal(player));
     }
   };
@@ -264,7 +267,7 @@ const Table = ({ navigation, playerOne, playerTwo }) => {
               key={element.id}
               text={element.result}
               onPress={() => handleOnPressUp(element.id, 1)}
-              onLongPress={() => handleLongPress(element.id, element.full, 1)}
+              onLongPress={() => handleLongPress(element.id, element.full, 1, element.result)}
             />
           ))}
         </Col>
@@ -281,7 +284,7 @@ const Table = ({ navigation, playerOne, playerTwo }) => {
               key={element.id}
               text={element.result}
               onPress={() => handleOnPressUp(element.id, 2)}
-              onLongPress={() => handleLongPress(element.id, element.full, 2)}
+              onLongPress={() => handleLongPress(element.id, element.full, 2, element.result)}
             />
           ))}
         </Col>

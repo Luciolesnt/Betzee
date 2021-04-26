@@ -1,5 +1,10 @@
 import data from "../../data/dices";
-import { ADD_RESULT, ADD_SELECT, COUNT_TOTAL } from "../actions/player";
+import {
+  ADD_RESULT,
+  ADD_SELECT,
+  CLEAN_RESULT,
+  COUNT_TOTAL,
+} from "../actions/player";
 
 const initialState = {
   playerOne: [...data],
@@ -88,6 +93,39 @@ function resultsReducer(state = initialState, action = {}) {
               return {
                 ...element,
                 result: action.id,
+              };
+            } else {
+              return element;
+            }
+          }),
+        };
+      }
+    }
+
+    case CLEAN_RESULT: {
+      if (action.player === 1) {
+        return {
+          ...state,
+          playerOne: state.playerOne.map((element) => {
+            if (element.id === action.id) {
+              return {
+                ...element,
+                result: null,
+              };
+            } else {
+              return element;
+            }
+          }),
+        };
+      }
+      if (action.player === 2) {
+        return {
+          ...state,
+          playerTwo: state.playerTwo.map((element) => {
+            if (element.id === action.id) {
+              return {
+                ...element,
+                result: null,
               };
             } else {
               return element;

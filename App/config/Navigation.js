@@ -23,8 +23,6 @@ const MainStackScreen = () => (
       options={{ headerShown: false }}
     />
   </MainStack.Navigator>
-
-  // @TODO : ADD THE GAME PAGE
 );
 
 const ModalStack = createStackNavigator();
