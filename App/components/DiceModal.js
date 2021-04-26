@@ -41,12 +41,12 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ({ onPress, diceModalVisible, diceName }) => {
+export default ({ onPress, diceModalVisible, diceName, playerId }) => {
   const dispatch = useDispatch();
   const setDiceModalVisibleFunction = onPress;
   const dispatchOnPress = (num) => {
-    dispatch(addSelect(diceName, num));
-    dispatch(countTotal());
+    dispatch(addSelect(diceName, num, playerId));
+    dispatch(countTotal(playerId));
   };
   const mergeFunc = (num) => {
     setDiceModalVisibleFunction(), dispatchOnPress(num);
@@ -67,9 +67,11 @@ export default ({ onPress, diceModalVisible, diceName }) => {
               >
                 <Row style={styles.modalRow}></Row>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => {
+              <TouchableOpacity
+                onPress={() => {
                   mergeFunc(1);
-                }}>
+                }}
+              >
                 <Row style={styles.modalRow}>
                   <Text>
                     <MaterialCommunityIcons
@@ -80,9 +82,11 @@ export default ({ onPress, diceModalVisible, diceName }) => {
                   </Text>
                 </Row>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => {
+              <TouchableOpacity
+                onPress={() => {
                   mergeFunc(2);
-                }}>
+                }}
+              >
                 <Row style={styles.modalRow}>
                   <Text>
                     <MaterialCommunityIcons
@@ -98,9 +102,11 @@ export default ({ onPress, diceModalVisible, diceName }) => {
                   </Text>
                 </Row>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => {
+              <TouchableOpacity
+                onPress={() => {
                   mergeFunc(3);
-                }}>
+                }}
+              >
                 <Row style={styles.modalRow}>
                   <Text>
                     <MaterialCommunityIcons

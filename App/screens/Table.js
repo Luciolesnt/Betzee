@@ -13,7 +13,10 @@ import Dialog from "react-native-dialog";
 import RowItem from "../components/RowItem";
 import DiceModal from "../components/DiceModal";
 import NumModal from "../components/NumModal";
-import { addResult, countTotal } from "../store/actions/player";
+import {
+  addResult,
+  countTotal,
+} from "../store/actions/player";
 
 import { Entypo, AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
 import colors from "../constants/colors";
@@ -48,14 +51,15 @@ const styles = StyleSheet.create({
 
 const Table = ({ navigation, playerOne, playerTwo }) => {
   const dispatch = useDispatch();
-  const [player1, setPlayer1] = useState("Lucie");
-  const [player2, setPlayer2] = useState("Gaëtan");
+  const [player1, setPlayer1] = useState("Joueur 1");
+  const [player2, setPlayer2] = useState("Joueur 2");
   const [visible, setVisible] = useState(false);
   const [input, setInput] = useState(false);
   const [diceModalVisible, setDiceModalVisible] = useState(false);
   const [numModalVisible, setNumModalVisible] = useState(false);
   const [diceName, setDiceName] = useState("dice-1");
   const [downId, setDownId] = useState("");
+  const [player, setPlayer] = useState(null);
 
   let newName;
 
@@ -91,22 +95,24 @@ const Table = ({ navigation, playerOne, playerTwo }) => {
     }
   };
 
-  const handleLongPress = (id, full) => {
-    dispatch(addResult(id, full));
+  const handleLongPress = (id, full, player) => {
+    dispatch(addResult(id, full, player));
     if (id < 7 && id >= 0) {
-      dispatch(countTotal());
+      dispatch(countTotal(player));
     } else if (id > 8 && id < 16) {
-      dispatch(countTotal());
+      dispatch(countTotal(player));
     }
   };
 
-  const handleOnPressUp = (id) => {
+  const handleOnPressUp = (id, playerId) => {
     if (id < 7 && id >= 0) {
       setDiceName("dice-" + id);
       setDiceModalVisible(!diceModalVisible);
+      setPlayer(playerId);
     } else if (id > 8 && id < 16) {
       setDownId(id);
       setNumModalVisible(!numModalVisible);
+      setPlayer(playerId);
     }
   };
 
@@ -118,11 +124,13 @@ const Table = ({ navigation, playerOne, playerTwo }) => {
           onPress={() => setDiceModalVisible(!diceModalVisible)}
           diceModalVisible={diceModalVisible}
           diceName={diceName}
+          playerId={player}
         />
         <NumModal
           onPress={() => setNumModalVisible(!numModalVisible)}
           numModalVisible={numModalVisible}
           downId={downId}
+          playerId={player}
         />
         <Col style={styles.colTitles} size={1}>
           <RowItem
@@ -255,8 +263,8 @@ const Table = ({ navigation, playerOne, playerTwo }) => {
             <RowItem
               key={element.id}
               text={element.result}
-              onPress={() => handleOnPressUp(element.id)}
-              onLongPress={() => handleLongPress(element.id, element.full)}
+              onPress={() => handleOnPressUp(element.id, 1)}
+              onLongPress={() => handleLongPress(element.id, element.full, 1)}
             />
           ))}
         </Col>
@@ -268,14 +276,14 @@ const Table = ({ navigation, playerOne, playerTwo }) => {
             <Dialog.Button label="Annuler" onPress={() => showModal(player2)} />
             <Dialog.Button label="OK" onPress={() => handleOK(player2)} />
           </Dialog.Container>
-          {/* {playerTwo.map((element) => (
+          {playerTwo.map((element) => (
             <RowItem
               key={element.id}
               text={element.result}
-              onPress={() => handleOnPressUp(element.id)}
-              onLongPress={() => handleLongPress(element.id, element.full)}
+              onPress={() => handleOnPressUp(element.id, 2)}
+              onLongPress={() => handleLongPress(element.id, element.full, 2)}
             />
-          ))} */}
+          ))}
         </Col>
       </Grid>
     </SafeAreaView>

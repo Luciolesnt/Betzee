@@ -14,11 +14,11 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     justifyContent: "space-between",
     fontSize: 16,
-    },
+  },
 });
 
 export default ({ text, onPress, onLongPress }) => {
-   const dispatch = useDispatch();
+  const dispatch = useDispatch();
   return (
     <Row onPress={onPress} style={styles.row} onLongPress={onLongPress}>
       <Text style={styles.text}>{text}</Text>

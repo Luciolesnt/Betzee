@@ -45,12 +45,12 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ({ onPress, numModalVisible, downId }) => {
+export default ({ onPress, numModalVisible, downId, playerId }) => {
   const dispatch = useDispatch();
   const setNumModalVisibleFunction = onPress;
   const dispatchOnPress = (num) => {
-    dispatch(addSelect(downId, num));
-    dispatch(countTotal());
+    dispatch(addSelect(downId, num, playerId));
+    dispatch(countTotal(playerId));
   };
   const mergeFunc = (num) => {
     setNumModalVisibleFunction(), dispatchOnPress(num);
