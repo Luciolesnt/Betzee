@@ -1,4 +1,6 @@
 import React from "react";
+import { useDispatch } from "react-redux";
+import { cleanAll } from "../store/actions/player";
 import {
   View,
   StyleSheet,
@@ -41,10 +43,11 @@ const styles = StyleSheet.create({
   text: {
     textAlign: "justify",
     color: colors.grey,
-  }
+  },
 });
 
 export default ({ navigation }) => {
+  const dispatch = useDispatch();
   return (
     <View style={styles.container}>
       <StatusBar hidden />
@@ -55,7 +58,13 @@ export default ({ navigation }) => {
               <FontAwesome5 name="dice" size={100} color={colors.orange} />
               <Text style={styles.logoText}>Betzee</Text>
             </View>
-            <Button text="Start" onPress={() => navigation.push("Table")} />
+            <Button
+              text="Start"
+              onPress={() => {
+                navigation.push("Table");
+                dispatch(cleanAll());
+              }}
+            />
             <Text style={styles.text}>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi sem
               urna, finibus viverra interdum eu, gravida id neque. Sed sit amet

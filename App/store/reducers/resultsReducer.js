@@ -4,6 +4,7 @@ import {
   ADD_SELECT,
   CLEAN_RESULT,
   COUNT_TOTAL,
+  CLEAN_ALL,
 } from "../actions/player";
 
 const initialState = {
@@ -13,6 +14,14 @@ const initialState = {
 
 function resultsReducer(state = initialState, action = {}) {
   switch (action.type) {
+    case CLEAN_ALL: {
+      return {
+        ...state,
+        playerOne: [...data],
+        playerTwo: [...data],
+      };
+    }
+
     case ADD_RESULT: {
       if (action.player === 1) {
         return {
